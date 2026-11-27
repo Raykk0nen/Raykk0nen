@@ -8,6 +8,7 @@
 <h2><a href="https://github.com/Raykk0nen/Campo_Minado"><img src="assets/campo-minado.png" width="100%" alt="Projeto atual · Campo Minado · Java e terminal"></a></h2>
 <p>Estou desenvolvendo um <strong>Campo Minado de terminal em Java</strong>. <a href="https://github.com/Raykk0nen/Campo_Minado">Ver o código do Campo Minado ↗</a></p>
 <h2><a href="https://github.com/vicccviccc/ifrncangVRGP"><img src="assets/extensao.png" width="100%" alt="Projetos de Extensão · IFRN Campus Canguaretama"></a></h2>
+<p>Faço parte da <strong>equipe de desenvolvimento</strong> da plataforma que apresenta três projetos de extensão do <strong>IFRN Campus Canguaretama</strong>. <a href="https://github.com/vicccviccc/ifrncangVRGP">Ver o projeto de extensão ↗</a></p>
 <h2>Maré de Ouro</h2>
 <p><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/carta-nautica.png"><img src="assets/carta-nautica.gif" width="100%" alt="Um navio em pixel art navega pelos dias de contribuição no calendário de Raykk0nen."></picture></p>
 <p>O navio cruza o <a href="https://github.com/Raykk0nen#js-contribution-activity">calendário de contribuições do GitHub</a>. Os quadrados mais claros marcam os dias com mais atividade.</p>
