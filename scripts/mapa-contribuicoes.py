@@ -1,20 +1,20 @@
-"""Renderiza a carta náutica estática e animada a partir do calendário público."""
+"""Transforma os dias ativos recentes do calendário público em pontos da rota."""
 
 import calendar
 import json
 import math
 import sys
-from datetime import date, timedelta
+from datetime import date
 from pathlib import Path
 
 from PIL import Image, ImageDraw
 
 ASSETS = Path(__file__).resolve().parents[1] / "assets"
-SIZE = (456, 116)
+SIZE = (456, 128)
 WATER = (8, 27, 49)
 GOLD = (245, 196, 109)
-LEVELS = [(16, 47, 73), (26, 103, 135), (48, 152, 176), (95, 214, 208), GOLD]
-MONTHS = ("", "JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ")
+LEVELS = [(45, 116, 153), (63, 170, 187), (109, 222, 210), GOLD]
+HEIGHTS = (59, 78, 51, 68, 43, 59, 80, 52, 69)
 SHIP = (
     ".......G.......", ".......GGG.....", ".......G.......", "......WW.......",
     ".....WWW.W.....", "....WWWW.WW....", "...WWWWW.WWW...", ".......G.......",
@@ -22,11 +22,10 @@ SHIP = (
 )
 
 
-def pixel_ship(draw, x, y, mirror=False):
+def pixel_ship(draw, x, y):
     colors = {"G": GOLD, "W": (255, 237, 185), "B": (157, 93, 53), "T": (63, 207, 220)}
-    draw.rectangle((x - 8, y - 7, x + 8, y + 6), fill=WATER)
     for j, row in enumerate(SHIP):
-        for i, pixel in enumerate(row[::-1] if mirror else row):
+        for i, pixel in enumerate(row):
             if pixel in colors:
                 draw.point((x + i - 7, y + j - 6), fill=colors[pixel])
 
@@ -42,41 +41,46 @@ def chart(source):
 
     image = Image.new("RGB", SIZE, WATER)
     draw = ImageDraw.Draw(image)
-    draw.rectangle((3, 3, 452, 112), outline="#276180")
-    draw.rectangle((9, 9, 446, 106), outline="#163d5b")
+    draw.rectangle((3, 3, 452, 124), outline="#276180")
+    draw.rectangle((9, 9, 446, 118), outline="#163d5b")
     for x in (3, 448):
-        for y in (3, 108):
+        for y in (3, 120):
             draw.rectangle((x, y, x + 4, y + 4), fill=GOLD)
     draw.text((18, 11), "CARTA DO OCEANO", fill=GOLD, font_size=12)
-    draw.text((438, 12), "MAPA DO GITHUB", fill="#75c8df", anchor="ra", font_size=10)
+    draw.text((438, 12), "DIAS COM ATIVIDADE", fill="#75c8df", anchor="ra", font_size=11)
     draw.line((18, 27, 438, 27), fill="#2d5b73")
+    draw.line((18, 101, 438, 101), fill="#2d5b73")
+    for x in range(27, 438, 16):
+        for y in range(34, 100, 9):
+            draw.point((x, y), fill="#21455e")
+    for x, y in ((101, 39), (163, 91), (282, 34), (351, 89)):
+        draw.line((x - 4, y, x + 4, y), fill="#376c83")
+        draw.line((x + 2, y + 2, x + 6, y + 2), fill="#21455e")
 
-    cols = ((last - first).days // 7) + 1
-    start_x = (SIZE[0] - 8 * cols) // 2
-    targets = {}
-    last_month_label = -8
-    for offset in range((last - first).days + 1):
-        day = first + timedelta(days=offset)
-        col, row = divmod(offset, 7)
-        x, y = start_x + 8 * col, 39 + 7 * row
-        if day.day <= 7 and row == 0 and col - last_month_label >= 5:
-            draw.text((x, 29), MONTHS[day.month], fill="#a1c5d4", font_size=9)
-            last_month_label = col
-        level, _ = activity.get(day, (0, 0))
-        draw.rectangle((x, y, x + 5, y + 4), fill=LEVELS[level])
-        if level:
-            targets.setdefault(col, []).append((x + 2, y + 2))
+    days = sorted(activity)[-len(HEIGHTS):]
+    positions = [(round(44 + 368 * (i / (len(days) - 1) if len(days) > 1 else .5)), HEIGHTS[i])
+                 for i in range(len(days))]
+    stops = [(18, 70), *positions, (438, 65)]
+    for (x1, y1), (x2, y2) in zip(stops, stops[1:]):
+        steps = max(1, round(math.hypot(x2 - x1, y2 - y1) / 4))
+        for step in range(steps):
+            x = round(x1 + (x2 - x1) * step / steps)
+            y = round(y1 + (y2 - y1) * step / steps)
+            draw.rectangle((x, y, x + 1, y + 1), fill="#48748c")
+    for day, (x, y) in zip(days, positions):
+        level, _ = activity[day]
+        color = LEVELS[level - 1]
+        draw.rectangle((x - 5, y - 5, x + 5, y + 5), fill=WATER, outline="#537b8d")
+        draw.rectangle((x - 3, y - 3, x + 3, y + 3), fill=color)
+        draw.line((x - 2, y - 2, x + 2, y - 2), fill="#e5efde")
+        draw.rectangle((x - 17, y + 7, x + 17, y + 19), fill=WATER)
+        draw.text((x, y + 8), day.strftime("%d/%m"), fill="#d0e4e9", anchor="ma", font_size=11)
 
-    draw.text((18, 91), "MENOS", fill="#a1c5d4", font_size=10)
+    draw.text((18, 104), "MENOS", fill="#a1c5d4", font_size=10)
     for index, color in enumerate(LEVELS):
-        draw.rectangle((59 + index * 8, 94, 64 + index * 8, 99), fill=color)
-    draw.text((102, 91), "MAIS", fill="#a1c5d4", font_size=10)
-    draw.text((438, 91), f"TOTAL {sum(count for _, count in activity.values())}",
-              fill=GOLD, font_size=10, anchor="ra")
-    stops = [(start_x - 3, 62)]
-    for col, points in targets.items():
-        stops.extend(points if col % 2 == 0 else reversed(points))
-    stops.append((start_x + 8 * (cols - 1) + 5, 66))
+        draw.rectangle((59 + index * 8, 107, 64 + index * 8, 112), fill=color)
+    draw.text((94, 104), "MAIS", fill="#a1c5d4", font_size=10)
+    draw.polygon([(431, 104), (435, 108), (431, 112), (427, 108)], fill=GOLD)
     return image, stops
 
 
