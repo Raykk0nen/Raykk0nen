@@ -13,3 +13,4 @@
 <p><a href="https://raykk0nen.github.io/Raykk0nen/">Jogar Maré de Ouro ↗</a> · Recolha 5 tesouros, desvie dos obstáculos e chegue ao porto.</p>
 <p><sub>Registro do calendário em 27/11/2026.</sub></p>
 <p><img src="assets/assinatura.png" width="100%" alt=""></p>
+<blockquote><p>“O futuro não é algo que esperamos, é algo que construímos.”<br>— Vegapunk, One Piece</p></blockquote>
