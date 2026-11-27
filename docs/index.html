@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08192d">
+  <meta name="description" content="Navegue entre recifes, recolha cinco tesouros e leve o navio até o porto.">
+  <title>Maré de Ouro · Raykk0nen</title>
+  <link rel="stylesheet" href="arcade.css">
+  <script src="arcade.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <a class="brand" href="https://github.com/Raykk0nen" aria-label="Perfil de Raykk0nen no GitHub"><span aria-hidden="true">◆</span> RAYKK0NEN</a>
+      <span class="masthead-label">ARCADE NÁUTICO</span>
+    </header>
+    <div class="intro">
+      <h1>Maré de Ouro<span aria-hidden="true">.</span></h1>
+      <p>Recolha 5 tesouros, desvie dos recifes e dos redemoinhos e leve o navio até o porto.</p>
+    </div>
+    <div class="layout">
+      <section class="screen" aria-label="Tabuleiro de Maré de Ouro">
+        <div class="screen-label"><span>◆ &nbsp; CARTA DE NAVEGAÇÃO</span><span>15 × 10</span></div>
+        <canvas id="map" width="360" height="240" aria-label="Mapa do oceano em pixel art. O navio começa perto da borda esquerda e o porto fica na borda direita.">Mapa de Maré de Ouro. O jogo precisa de suporte a canvas.</canvas>
+        <p class="message" id="message" role="status" aria-live="polite">Você está no ancoradouro. Tudo pronto para zarpar?</p>
+      </section>
+      <aside class="console" aria-label="Controles e estado do navio">
+        <div class="meters">
+          <p><span>TESOUROS</span><output id="gold" aria-label="Tesouros recolhidos">0 / 5</output></p>
+          <p><span>CASCO</span><output id="hull" aria-label="Pontos do casco">3 / 3</output></p>
+        </div>
+        <div class="helm">
+          <h2>Timão</h2>
+          <p id="controls-note">Use as setas, WASD ou os botões de direção.</p>
+          <div class="dpad" role="group" aria-label="Direção do navio" aria-describedby="controls-note">
+            <button type="button" data-dir="up" aria-label="Navegar para cima" disabled>▲</button>
+            <button type="button" data-dir="left" aria-label="Navegar para a esquerda" disabled>◀</button>
+            <button type="button" data-dir="down" aria-label="Navegar para baixo" disabled>▼</button>
+            <button type="button" data-dir="right" aria-label="Navegar para a direita" disabled>▶</button>
+          </div>
+          <button class="action" type="button" id="start">Zarpar</button>
+          <button class="reset" type="button" id="reset" hidden>Reiniciar</button>
+        </div>
+        <div class="legend" aria-label="Legenda do mapa">
+          <span><i class="token coin" aria-hidden="true"></i>Tesouro</span>
+          <span><i class="token rock" aria-hidden="true"></i>Recife</span>
+          <span><i class="token whirl" aria-hidden="true"></i>Redemoinho</span>
+          <span><i class="token dock" aria-hidden="true"></i>Porto</span>
+        </div>
+      </aside>
+    </div>
+    <noscript><p>Ative o JavaScript para jogar Maré de Ouro.</p></noscript>
+  </main>
+</body>
+</html>
