@@ -3,3 +3,4 @@
 <p>Sou estudante de <strong>cybersecurity</strong> e de <strong>desenvolvimento back-end</strong>.</p>
 <p><code>Foco de estudo</code> &nbsp; <strong>Java e Python</strong></p>
 <h2><img src="assets/inventario.png" width="100%" alt="Inventário de tecnologias"></h2>
+<p><img src="assets/java.png" height="34" alt="Java"> <img src="assets/git.png" height="34" alt="Git"> <img src="assets/github.png" height="34" alt="GitHub"> <img src="assets/intellij.png" height="34" alt="IntelliJ IDEA"></p>
