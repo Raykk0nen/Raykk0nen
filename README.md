@@ -11,7 +11,7 @@
 <p>Faço parte da <strong>equipe de desenvolvimento</strong> da plataforma que apresenta três projetos de extensão do <strong>IFRN Campus Canguaretama</strong>. <a href="https://github.com/vicccviccc/ifrncangVRGP">Ver o projeto de extensão ↗</a></p>
 <h2>Maré de Ouro</h2>
 <p><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/carta-nautica.png"><img src="assets/carta-nautica.gif" width="100%" alt="Um navio em pixel art navega pelos dias de contribuição no calendário de Raykk0nen."></picture></p>
-<p>O navio cruza o <a href="https://github.com/Raykk0nen#js-contribution-activity">calendário de contribuições do GitHub</a>. Os quadrados mais claros marcam os dias com mais atividade.</p>
+<p>Acompanhe meu progresso nesta jornada pelo <a href="https://github.com/Raykk0nen#js-contribution-activity">calendário de contribuições do GitHub</a>.</p>
 <p><a href="https://raykk0nen.github.io/Raykk0nen/">Jogar Maré de Ouro ↗</a> · Recolha 5 tesouros, desvie dos obstáculos e chegue ao porto.</p>
 <p><sub>Registro do calendário em 27/11/2026.</sub></p>
 <p><img src="assets/assinatura.png" width="100%" alt=""></p>
