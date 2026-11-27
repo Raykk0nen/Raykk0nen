@@ -15,6 +15,8 @@ WATER = (8, 27, 49)
 GOLD = (245, 196, 109)
 LEVELS = [(45, 116, 153), (63, 170, 187), (109, 222, 210), GOLD]
 HEIGHTS = (59, 78, 51, 68, 43, 59, 80, 52, 69)
+TREASURE_ROWS = (0, 3, 6, 1, 5, 2, 4)
+FRAMES = 210
 SHIP = (
     ".......G.......", ".......GGG.....", ".......G.......", "......WW.......",
     ".....WWW.W.....", "....WWWW.WW....", "...WWWWW.WWW...", ".......G.......",
@@ -28,6 +30,28 @@ def pixel_ship(draw, x, y):
         for i, pixel in enumerate(row):
             if pixel in colors:
                 draw.point((x + i - 7, y + j - 6), fill=colors[pixel])
+
+
+def treasure_route(waypoints, requested):
+    gaps = [i for i, (a, b) in enumerate(zip(waypoints, waypoints[1:])) if b[0] - a[0] >= 34]
+    count = min(requested, len(gaps) * len(TREASURE_ROWS))
+    stops = [waypoints[0]]
+    treasures = []
+    if not count:
+        return waypoints, treasures
+    per_gap, remainder = divmod(count, len(gaps))
+    for i, (left, right) in enumerate(zip(waypoints, waypoints[1:])):
+        if i in gaps:
+            gap = gaps.index(i)
+            center = (left[0] + right[0]) // 2
+            rows = sorted(TREASURE_ROWS[:per_gap + (gap < remainder)], reverse=gap % 2 == 1)
+            for row in rows:
+                x = center + 3 * ((row * 3 + gap) % 5 - 2)
+                y = 36 + row * 9 + (gap % 3 - 1) * 2
+                treasures.append(len(stops))
+                stops.append((x, y))
+        stops.append(right)
+    return stops, treasures
 
 
 def chart(source):
@@ -60,8 +84,8 @@ def chart(source):
     days = sorted(activity)[-len(HEIGHTS):]
     positions = [(round(44 + 368 * (i / (len(days) - 1) if len(days) > 1 else .5)), HEIGHTS[i])
                  for i in range(len(days))]
-    stops = [(18, 70), *positions, (438, 65)]
-    for (x1, y1), (x2, y2) in zip(stops, stops[1:]):
+    waypoints = [(18, 70), *positions, (438, 65)]
+    for (x1, y1), (x2, y2) in zip(waypoints, waypoints[1:]):
         steps = max(1, round(math.hypot(x2 - x1, y2 - y1) / 4))
         for step in range(steps):
             x = round(x1 + (x2 - x1) * step / steps)
@@ -81,11 +105,14 @@ def chart(source):
         draw.rectangle((59 + index * 8, 107, 64 + index * 8, 112), fill=color)
     draw.text((94, 104), "MAIS", fill="#a1c5d4", font_size=10)
     draw.polygon([(431, 104), (435, 108), (431, 112), (427, 108)], fill=GOLD)
-    return image, stops
+    # A marca datada representa um registro. Os restantes viram pontos de coleta.
+    extra = sum(activity[day][1] - 1 for day in days)
+    stops, treasures = treasure_route(waypoints, extra)
+    return image, stops, treasures
 
 
 def render(source):
-    base, stops = chart(source)
+    base, stops, treasures = chart(source)
     scale = (SIZE[0] * 2, SIZE[1] * 2)
     lengths = [0]
     for before, after in zip(stops, stops[1:]):
@@ -96,13 +123,22 @@ def render(source):
         ratio = (distance - lengths[end - 1]) / (lengths[end] - lengths[end - 1])
         x, y = [round(a + (b - a) * ratio) for a, b in zip(stops[end - 1], stops[end])]
         image = base.copy()
-        pixel_ship(ImageDraw.Draw(image), x, y)
+        draw = ImageDraw.Draw(image)
+        for target in treasures:
+            t_x, t_y = stops[target]
+            if distance < lengths[target]:
+                draw.rectangle((t_x - 1, t_y - 1, t_x + 1, t_y + 1), fill="#67cec6")
+                draw.point((t_x - 1, t_y - 1), fill="#b5e8d9")
+            elif distance - lengths[target] < 7:
+                draw.point((t_x - 2, t_y + 1), fill=GOLD)
+                draw.point((t_x + 2, t_y - 1), fill=GOLD)
+        pixel_ship(draw, x, y)
         return image.resize(scale, Image.Resampling.NEAREST)
 
     frame(0).save(ASSETS / "carta-nautica.png", optimize=True)
-    frames = [frame(lengths[-1] * i / 107) for i in range(108)]
+    frames = [frame(lengths[-1] * i / (FRAMES - 1)) for i in range(FRAMES)]
     frames[0].save(ASSETS / "carta-nautica.gif", save_all=True, append_images=frames[1:],
-                   duration=[140] * 107 + [900], loop=0, optimize=True)
+                   duration=[100] * (FRAMES - 1) + [900], loop=0, optimize=True)
 
 
 if __name__ == "__main__":
