@@ -97,15 +97,13 @@ def chart(source):
         draw.rectangle((x - 5, y - 5, x + 5, y + 5), fill=WATER, outline="#537b8d")
         draw.rectangle((x - 3, y - 3, x + 3, y + 3), fill=color)
         draw.line((x - 2, y - 2, x + 2, y - 2), fill="#e5efde")
-        draw.rectangle((x - 17, y + 7, x + 17, y + 19), fill=WATER)
-        draw.text((x, y + 8), day.strftime("%d/%m"), fill="#d0e4e9", anchor="ma", font_size=11)
 
     draw.text((18, 104), "MENOS", fill="#a1c5d4", font_size=10)
     for index, color in enumerate(LEVELS):
         draw.rectangle((59 + index * 8, 107, 64 + index * 8, 112), fill=color)
     draw.text((94, 104), "MAIS", fill="#a1c5d4", font_size=10)
     draw.polygon([(431, 104), (435, 108), (431, 112), (427, 108)], fill=GOLD)
-    # A marca datada representa um registro. Os restantes viram pontos de coleta.
+    # A marca de cada dia representa um registro. Os restantes viram pontos de coleta.
     extra = sum(activity[day][1] - 1 for day in days)
     stops, treasures = treasure_route(waypoints, extra)
     return image, stops, treasures
